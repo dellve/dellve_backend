@@ -1,5 +1,5 @@
 var express = require('express');
-var router = express.Router();
+var BenchendRoute = express.Router();
 
 // TODO: define benchend API REST end-point here
 //
@@ -12,4 +12,4 @@ var router = express.Router();
 // Note: Essentially, we need to map this route's API into that
 //       of 'benchend-controller' (which you can find in ../controllers/)
 
-module.exports = router;
+module.exports = BenchendRoute;

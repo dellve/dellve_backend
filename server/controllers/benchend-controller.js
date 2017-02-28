@@ -2,12 +2,13 @@ var zmq = require('zmq');
 var pub = zmq.socket('pub');
 
 /**
- * Controller constructor.
+ * BenchendController constructor.
  *
- * @class      Controller (name)
+ * @access     public
+ * @class      BenchendController (name)
  * @param      {Number}  zmqPort  Public TCP port.
  */
-function Controller(zmqPort) {
+function BenchendController(zmqPort) {
   /**
    * Asynchronous API callback
    */
@@ -25,14 +26,14 @@ function Controller(zmqPort) {
 /**
  *  Connects to ZeroMQ socket.
  */
-Controller.prototype.connect = function() {
+BenchendController.prototype.connect = function() {
   pub.bindSync('tcp://*:' + this.zmqPort);
 }
 
 /**
  * Disconnects from ZeroMQ socket.
  */
-Controller.prototype.disconnect = function() {
+BenchendController.prototype.disconnect = function() {
   pub.unbindSync('tcp:*:' + this.zmqPort);
 }
 
@@ -42,9 +43,8 @@ Controller.prototype.disconnect = function() {
  * @param      {Number}    serverId  Server ID
  * @param      {Function}  callback  Data receiver callback.
  * @param      {Boolean}   once      If true, callback will be called only once (default=true)
- *
  */
-Controller.prototype.getBenchmarkInfo = function(serverId, callback, once) {
+BenchendController.prototype.getBenchmarkInfo = function(serverId, callback, once) {
   // TODO: Register callback
   //
   // TODO: implement this with ZMQ...
@@ -61,7 +61,7 @@ Controller.prototype.getBenchmarkInfo = function(serverId, callback, once) {
   * @param      {Number}  serverId  Server ID
   * @param      {Object}  data      Decoded JSON object containing benchmark info
   */
-Controller.prototype.setBenchmarkInfo = function(serverId, data) {
+BenchendController.prototype.setBenchmarkInfo = function(serverId, data) {
   // TODO: Store and propagate data.
   //
   //       1. Store data (in memory, or in DB, we can decide later)
@@ -77,7 +77,7 @@ Controller.prototype.setBenchmarkInfo = function(serverId, data) {
  * @param      {Function}  callback     Data receiver callback
  * @param      {Boolean}   once         If true, callback will be called only once (default=false)
  */
-Controller.prototype.getBenchmarkMetrics = function(serverId, benchmarkId, callback, once) {
+BenchendController.prototype.getBenchmarkMetrics = function(serverId, benchmarkId, callback, once) {
   // TODO: Register callback
   //
   // TODO: implement the following with ZMQ...
@@ -95,7 +95,7 @@ Controller.prototype.getBenchmarkMetrics = function(serverId, benchmarkId, callb
  * @param      {Number}  benchmarkId  Benchmark ID
  * @param      {Object}  data         Decoded JSON object containing benchmark metric data
  */
-Controller.prototype.setBenchmarkMetrics = function(serverId, benchmarkId, data) {
+BenchendController.prototype.setBenchmarkMetrics = function(serverId, benchmarkId, data) {
   // TODO: Store and propagate data
   //
   //       1. Store data (in memory, or in DB, we can decide later)
@@ -109,7 +109,7 @@ Controller.prototype.setBenchmarkMetrics = function(serverId, benchmarkId, data)
  * @param      {Number}  serverId     Server ID
  * @param      {Number}  benchmarkId  Benchmark ID
  */
-Controller.prototype.startBenchmark = function(serverId, benchmarkId) {
+BenchendController.prototype.startBenchmark = function(serverId, benchmarkId) {
   // TODO: implement this with ZMQ...
   //
   //       1. Ask benchend to run a particular benchmark
@@ -122,11 +122,11 @@ Controller.prototype.startBenchmark = function(serverId, benchmarkId) {
  * @param      {Number}  serverId     Server ID
  * @param      {Number}  benchmarkId  Benchmark ID
  */
-Controller.prototype.stopBenchmark = function(serverId, benchmarkId) {
+BenchendController.prototype.stopBenchmark = function(serverId, benchmarkId) {
   // TODO: implement this with ZMQ...
   //
   //       1. Ask benchend to stop a particular benchmark
   //
 }
 
-module.exports = Controller;
+module.exports = BenchendController;

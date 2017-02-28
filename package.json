@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./index.js",
-    "test": "node ./node_modules/.bin/mocha --recursive test"
+    "start": "node index.js",
+    "test": "node_modules/.bin/mocha --recursive test",
+    "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
   },
   "dependencies": {
     "body-parser": "~1.16.0",
@@ -15,6 +16,9 @@
     "serve-favicon": "~2.3.2"
   },
   "devDependencies": {
+    "esdoc": "^0.5.2",
+    "esdoc-node": "^1.0.1",
+    "minami": "^1.1.1",
     "mocha": "^3.2.0",
     "should": "^11.2.0"
   }

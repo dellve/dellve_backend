@@ -1,12 +1,8 @@
 /**
- * Create Express.js application instance.
+ * Express.js application instance.
  */
 
 var app = require('express')();
-
-/**
- * Pull-in misc module dependencies.
- */
 
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
@@ -17,6 +13,7 @@ var path = require('path');
 /**
  * Register middleware
  */
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

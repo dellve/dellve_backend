@@ -1,39 +1,22 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
 var app = require('./app');
-var debug = require('debug')('dellve-node-benchend-controller:server');
+var debug = require('debug')('dellve-backend:server');
 var http = require('http');
 
 /**
- * Get port from environment and store in Express.
- */
-
-var port = process.env.PORT || '3000';
-app.set('port', port);
-
-/**
- * Create HTTP server.
+ * Node.js HTTP server instance.
  */
 
 var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
+var port = process.env.PORT || '3000';
+app.set('port', port);
 server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
 
 /**
  * Event listener for HTTP server "error" event.
  */
-
-function onError(error) {
+server.on('error', function (error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -55,16 +38,18 @@ function onError(error) {
     default:
       throw error;
   }
-}
+});
 
 /**
  * Event listener for HTTP server "listening" event.
  */
-
-function onListening() {
+server.on('listening', function () {
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
-}
+});
+
+
+
