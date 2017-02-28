@@ -9,14 +9,14 @@ Node.js application that provides backend APIs for **DELLveDeep** distributed HP
 Getting Started
 ----------------------
 
-1. Clone repo:
+Clone repo:
 
 ```
 git clone https://github.com/dellve/dellve_backend.git
 cd dellve_backend.git
 ```
 
-2. Setup Node.js environment.
+Setup Node.js environment.
 
 ```
 npm init && npm install
