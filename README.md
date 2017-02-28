@@ -1,7 +1,7 @@
 DELLveBackend
 ============
 
-DELLveBackend is a Node.js application that provides backend APIs for **DELLveDeep** distributed HPC benchmark by **Dell** and **UT Austin**.  
+Node.js application that provides backend APIs for **DELLveDeep** distributed HPC benchmark by **Dell** and **UT Austin**.  
 
 ----------
 
