@@ -10,12 +10,14 @@ Getting Started
 ----------------------
 
 1. Clone repo:
+
 ```
 git clone https://github.com/dellve/dellve_backend.git
 cd dellve_backend.git
 ```
 
 2. Setup Node.js environment.
+
 ```
 npm init && npm install
 ``` 
