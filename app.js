@@ -11,7 +11,7 @@ var logger = require('morgan');
 var path = require('path');
 
 /**
- * Auth0 client instance.
+ * Setup JS web-token middleware
  */
 
 var authenticate = expressJwt({
@@ -30,7 +30,7 @@ express.use(favicon(path.join(__dirname, 'client', 'favicon.ico')));
 express.use(logger('dev'));
 
 /**
- * Register routes
+ * Register routes (and routed middleware)
  */
 
 express.use('/', function(req, res) {
