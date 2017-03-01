@@ -2,7 +2,14 @@
 
 var app = require('./app');
 var debug = require('debug')('dellve-backend:server');
+var dotenv = require('dotenv');
 var http = require('http');
+
+/**
+ * Load environment variables.
+ */
+
+dotenv.load();
 
 /**
  * Node.js HTTP server instance.

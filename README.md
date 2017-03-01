@@ -16,7 +16,7 @@ git clone https://github.com/dellve/dellve_backend.git
 cd dellve_backend.git
 ```
 
-Setup Node.js environment.
+Setup Node.js environment:
 
 ```
 npm init && npm install
