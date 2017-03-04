@@ -9,7 +9,7 @@ var http = require('http');
  * Load environment variables.
  */
 
-dotenv.load();
+dotenv.load('.env');
 
 /**
  * Node.js HTTP server instance.

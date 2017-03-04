@@ -2,6 +2,15 @@ var zmq = require('zeromq');
 var pub = zmq.socket('pub');
 var sub = zmq.socket('sub');
 
+function renderMessage(serverId, messageType, messageData) {
+  return serverId.toString() + ' ' + messageType.toString() + ' ' + JSON.stringify(messageData);
+}
+
+function sendMessage(serverId, messageType, messageData) {
+  console.log('SEND: ' + renderMessage(serverId, messageType, messageData));
+  pub.send(renderMessage(serverId, messageType, messageData));
+}
+
 /**
  * BenchendController constructor.
  *
@@ -15,14 +24,6 @@ function BenchendController(userCallbacks) {
 
   this.callbacks = userCallbacks;
 
-  function renderMessage(serverId, messageType, messageData) {
-    return serverId.toString() + ' ' + messageType.toString() + ' ' + messageData.toString();
-  }
-
-  function sendMessage(serverId, messageType, messageData) {
-    pub.send(this.renderMessage(serverId, messageType, messageData));
-  }
-
   sub.on('message', function(data) {
     // TODO: dispatch data to private methods and user callbacks
   });
@@ -32,17 +33,29 @@ function BenchendController(userCallbacks) {
  *  Starts benchend service endpoint.
  */
 BenchendController.prototype.start = function() {
+  console.log('START PUB tcp://' +
+    (process.env.ZMQ_PUB_HOST || '*') + ':' +
+    (process.env.ZMQ_PUB_PORT || '5556'));
+  console.log('START SUB tcp://' +
+    (process.env.ZMQ_SUB_HOST || 'localhost') + ':' +
+    (process.env.ZMQ_SUB_PORT || '5555'));
   // TODO: consider async alternatives to bindSync
-  pub.bindSync('tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT);
-  sub.connect('tcp://'  + process.env.ZMQ_SUB_HOST + ':' + process.env.ZMQ_SUB_PORT);
+  pub.bind('tcp://' +
+    (process.env.ZMQ_PUB_HOST || '*') + ':' +
+    (process.env.ZMQ_PUB_PORT || '5556'))
+  sub.connect('tcp://' +
+    (process.env.ZMQ_SUB_HOST || 'localhost') + ':' +
+    (process.env.ZMQ_SUB_PORT || '5555'));
 }
 
 /**
  * Stops benchend service endpoint.
  */
 BenchendController.prototype.stop = function() {
+  console.log('STOP PUB tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT);
+  console.log('STOP SUB tcp://'  + process.env.ZMQ_SUB_HOST + ':' + process.env.ZMQ_SUB_PORT);
   // TODO: consider async alternatives to unbindSync
-  pub.unbindSync('tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT);
+  pub.unbind('tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT);
   sub.disconnect('tcp://' + process.env.ZMQ_SUB_HOST + ':' + process.env.ZMQ_SUB_PORT);
 }
 
@@ -82,6 +95,7 @@ BenchendController.prototype.startBenchmark = function(serverId, benchmarkId) {
   //       1. Ask benchend to run a particular benchmark
   //
   console.log('Server ' + serverId + ', Benchmark ' + benchmarkId + ' START');
+  sendMessage(serverId, 'startBenchmark', {benchmarkId: benchmarkId});
 }
 
 /**
@@ -96,6 +110,7 @@ BenchendController.prototype.stopBenchmark = function(serverId, benchmarkId) {
   //       1. Ask benchend to stop a particular benchmark
   //
   console.log('Server ' + serverId + ', Benchmark ' + benchmarkId + ' STOP');
+  sendMessage(serverId, 'stopBenchmark', {benchmarkId: benchmarkId});
 }
 
 module.exports = BenchendController;
