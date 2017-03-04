@@ -1,107 +1,74 @@
 var zmq = require('zmq');
 var pub = zmq.socket('pub');
+var sub = zmq.socket('sub');
 
 /**
- * BenchendController constructor.
+ * BenchendService constructor.
  *
  * @access     public
- * @class      BenchendController (name)
- * @param      {Number}  zmqPort  Public TCP port.
+ * @class      BenchendService (name)
  */
-function BenchendController(zmqPort) {
+function BenchendService(userCallbacks) {
   /**
    * Asynchronous API callback
    */
-  this.callbacks = {
-    getBenchmarkInfo: {},
-    getBenchmarkMetrics: {}
+
+  this.callbacks = userCallbacks;
+
+  function renderMessage(serverId, messageType, messageData) {
+    return serverId.toString() + ' ' + messageType.toString() + ' ' + messageData.toString();
   }
 
-  /**
-   * ZeroMQ port number (5555 by default)
-   */
-  this.zmqPort = zmqPort || 5555; // TODO: get zmqPort through config API instead!
+  function sendMessage(serverId, messageType, messageData) {
+    pub.send(this.renderMessage(serverId, messageType, messageData));
+  }
+
+  sub.on('message', function(data) {
+    // TODO: dispatch data to private methods and user callbacks
+  });
 }
 
 /**
- *  Connects to ZeroMQ socket.
+ *  Starts benchend service endpoint.
  */
-BenchendController.prototype.connect = function() {
-  pub.bindSync('tcp://*:' + this.zmqPort);
+BenchendService.prototype.start = function() {
+  // TODO: consider async alternatives to bindSync
+  pub.bindSync('tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT);
+  sub.connect('tcp://'  + process.env.ZMQ_SUB_HOST + ':' + process.env.ZMQ_SUB_PORT);
 }
 
 /**
- * Disconnects from ZeroMQ socket.
+ * Stops benchend service endpoint.
  */
-BenchendController.prototype.disconnect = function() {
-  pub.unbindSync('tcp:*:' + this.zmqPort);
+BenchendService.prototype.stop = function() {
+  // TODO: consider async alternatives to unbindSync
+  pub.unbindSync('tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT);
+  sub.disconnect('tcp://' + process.env.ZMQ_SUB_HOST + ':' + process.env.ZMQ_SUB_PORT);
 }
 
 /**
- * Gets the benchmark info.
- *
- * @param      {Number}    serverId  Server ID
- * @param      {Function}  callback  Data receiver callback.
- * @param      {Boolean}   once      If true, callback will be called only once (default=true)
- */
-BenchendController.prototype.getBenchmarkInfo = function(serverId, callback, once) {
-  // TODO: Register callback
-  //
-  // TODO: implement this with ZMQ...
-  //
-  //       1. If the info isn't stored on backend, tell benchend to provide it
-  //          (Side note: ideally, benchend would provide info upon start up)
-  //       2. If the info is here, pass it to callback.
-  //
-}
-
- /**
-  * Sets the benchmark information.
-  *
-  * @param      {Number}  serverId  Server ID
-  * @param      {Object}  data      Decoded JSON object containing benchmark info
-  */
-BenchendController.prototype.setBenchmarkInfo = function(serverId, data) {
-  // TODO: Store and propagate data.
-  //
-  //       1. Store data (in memory, or in DB, we can decide later)
-  //       2. If there are any callbacks waiting for data,
-  //          call them in order (i.e. think callback FIFO)
-};
-
-/**
- * Gets the benchmark metrics.
- *
- * @param      {Number}    serverId     Server ID
- * @param      {Number}    benchmarkId  Benchmark ID
- * @param      {Function}  callback     Data receiver callback
- * @param      {Boolean}   once         If true, callback will be called only once (default=false)
- */
-BenchendController.prototype.getBenchmarkMetrics = function(serverId, benchmarkId, callback, once) {
-  // TODO: Register callback
-  //
-  // TODO: implement the following with ZMQ...
-  //
-  //       1. Tell benchend to begin metric stream
-  //       2. Receive metric stream via REST API (sometime later...)
-  //       3. Propagate metric stream using callback(s)
-  //
-}
-
-/**
- * Sets the benchmark metrics.
+ * Starts the metric stream from a particular server.
  *
  * @param      {Number}  serverId     Server ID
- * @param      {Number}  benchmarkId  Benchmark ID
- * @param      {Object}  data         Decoded JSON object containing benchmark metric data
  */
-BenchendController.prototype.setBenchmarkMetrics = function(serverId, benchmarkId, data) {
-  // TODO: Store and propagate data
+BenchendService.prototype.startMetricStream = function(serverId) {
+  // TODO: implement this with ZMQ...
   //
-  //       1. Store data (in memory, or in DB, we can decide later)
-  //       2. If there are any callbacks waiting for data,
-  //          call them in order (i.e. think callback FIFO)
-};
+  //       1. Ask benchend to run a particular benchmark
+  //
+}
+
+/**
+ * Stops the metric stream from a particular server.
+ *
+ * @param      {Number}  serverId     Server ID
+ */
+BenchendService.prototype.stopMetricStream = function(serverId) {
+  // TODO: implement this with ZMQ...
+  //
+  //       1. Ask benchend to stop a particular benchmark
+  //
+}
 
 /**
  * Starts a benchmark.
@@ -109,7 +76,7 @@ BenchendController.prototype.setBenchmarkMetrics = function(serverId, benchmarkI
  * @param      {Number}  serverId     Server ID
  * @param      {Number}  benchmarkId  Benchmark ID
  */
-BenchendController.prototype.startBenchmark = function(serverId, benchmarkId) {
+BenchendService.prototype.startBenchmark = function(serverId, benchmarkId) {
   // TODO: implement this with ZMQ...
   //
   //       1. Ask benchend to run a particular benchmark
@@ -122,11 +89,11 @@ BenchendController.prototype.startBenchmark = function(serverId, benchmarkId) {
  * @param      {Number}  serverId     Server ID
  * @param      {Number}  benchmarkId  Benchmark ID
  */
-BenchendController.prototype.stopBenchmark = function(serverId, benchmarkId) {
+BenchendService.prototype.stopBenchmark = function(serverId, benchmarkId) {
   // TODO: implement this with ZMQ...
   //
   //       1. Ask benchend to stop a particular benchmark
   //
 }
 
-module.exports = BenchendController;
+module.exports = BenchendService;
