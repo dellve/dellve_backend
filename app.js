@@ -14,10 +14,10 @@ var path = require('path');
  * Setup JS web-token middleware
  */
 
-var authenticate = expressJwt({
-  secret: process.env.AUTH0_CLIENT_SECRET,
-  audience: process.env.AUTH0_CLIENT_ID
-});
+// var authenticate = expressJwt({
+//   secret: process.env.AUTH0_CLIENT_SECRET,
+//   audience: process.env.AUTH0_CLIENT_ID
+// });
 
 /**
  * Register middleware
@@ -33,12 +33,11 @@ express.use(logger('dev'));
  * Register routes (and routed middleware)
  */
 
-express.use('/', function(req, res) {
-  res.send('DELLve - backend!');  // NOTE: this is here to see if server works...
-});
+// express.use('/', function(req, res) {
+//   res.send('DELLve - backend!');  // NOTE: this is here to see if server works...
+// });
 
 express.use('/benchend', require('./server/routes/benchend'));
-express.use('/benchend', expressJwt); // secure benchend...
-
+// express.use('/benchend', expressJwt); // secure benchend...
 
 module.exports = express;

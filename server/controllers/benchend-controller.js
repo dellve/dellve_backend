@@ -1,14 +1,14 @@
-var zmq = require('zmq');
+var zmq = require('zeromq');
 var pub = zmq.socket('pub');
 var sub = zmq.socket('sub');
 
 /**
- * BenchendService constructor.
+ * BenchendController constructor.
  *
  * @access     public
- * @class      BenchendService (name)
+ * @class      BenchendController (name)
  */
-function BenchendService(userCallbacks) {
+function BenchendController(userCallbacks) {
   /**
    * Asynchronous API callback
    */
@@ -31,7 +31,7 @@ function BenchendService(userCallbacks) {
 /**
  *  Starts benchend service endpoint.
  */
-BenchendService.prototype.start = function() {
+BenchendController.prototype.start = function() {
   // TODO: consider async alternatives to bindSync
   pub.bindSync('tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT);
   sub.connect('tcp://'  + process.env.ZMQ_SUB_HOST + ':' + process.env.ZMQ_SUB_PORT);
@@ -40,7 +40,7 @@ BenchendService.prototype.start = function() {
 /**
  * Stops benchend service endpoint.
  */
-BenchendService.prototype.stop = function() {
+BenchendController.prototype.stop = function() {
   // TODO: consider async alternatives to unbindSync
   pub.unbindSync('tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT);
   sub.disconnect('tcp://' + process.env.ZMQ_SUB_HOST + ':' + process.env.ZMQ_SUB_PORT);
@@ -51,7 +51,7 @@ BenchendService.prototype.stop = function() {
  *
  * @param      {Number}  serverId     Server ID
  */
-BenchendService.prototype.startMetricStream = function(serverId) {
+BenchendController.prototype.startMetricStream = function(serverId) {
   // TODO: implement this with ZMQ...
   //
   //       1. Ask benchend to run a particular benchmark
@@ -63,7 +63,7 @@ BenchendService.prototype.startMetricStream = function(serverId) {
  *
  * @param      {Number}  serverId     Server ID
  */
-BenchendService.prototype.stopMetricStream = function(serverId) {
+BenchendController.prototype.stopMetricStream = function(serverId) {
   // TODO: implement this with ZMQ...
   //
   //       1. Ask benchend to stop a particular benchmark
@@ -76,11 +76,12 @@ BenchendService.prototype.stopMetricStream = function(serverId) {
  * @param      {Number}  serverId     Server ID
  * @param      {Number}  benchmarkId  Benchmark ID
  */
-BenchendService.prototype.startBenchmark = function(serverId, benchmarkId) {
+BenchendController.prototype.startBenchmark = function(serverId, benchmarkId) {
   // TODO: implement this with ZMQ...
   //
   //       1. Ask benchend to run a particular benchmark
   //
+  console.log('Server ' + serverId + ', Benchmark ' + benchmarkId + ' START');
 }
 
 /**
@@ -89,11 +90,12 @@ BenchendService.prototype.startBenchmark = function(serverId, benchmarkId) {
  * @param      {Number}  serverId     Server ID
  * @param      {Number}  benchmarkId  Benchmark ID
  */
-BenchendService.prototype.stopBenchmark = function(serverId, benchmarkId) {
+BenchendController.prototype.stopBenchmark = function(serverId, benchmarkId) {
   // TODO: implement this with ZMQ...
   //
   //       1. Ask benchend to stop a particular benchmark
   //
+  console.log('Server ' + serverId + ', Benchmark ' + benchmarkId + ' STOP');
 }
 
-module.exports = BenchendService;
+module.exports = BenchendController;
