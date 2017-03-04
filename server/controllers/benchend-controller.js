@@ -65,10 +65,8 @@ BenchendController.prototype.stop = function() {
  * @param      {Number}  serverId     Server ID
  */
 BenchendController.prototype.startMetricStream = function(serverId) {
-  // TODO: implement this with ZMQ...
-  //
-  //       1. Ask benchend to run a particular benchmark
-  //
+  console.log('Server ' + serverId + ' startMetricStream');
+  sendMessage(serverId, 'startMetricStream', {});
 }
 
 /**
@@ -77,10 +75,8 @@ BenchendController.prototype.startMetricStream = function(serverId) {
  * @param      {Number}  serverId     Server ID
  */
 BenchendController.prototype.stopMetricStream = function(serverId) {
-  // TODO: implement this with ZMQ...
-  //
-  //       1. Ask benchend to stop a particular benchmark
-  //
+  console.log('Server ' + serverId + ' stopMetricStream');
+  sendMessage(serverId, 'stopMetricStream', {});
 }
 
 /**
@@ -90,11 +86,7 @@ BenchendController.prototype.stopMetricStream = function(serverId) {
  * @param      {Number}  benchmarkId  Benchmark ID
  */
 BenchendController.prototype.startBenchmark = function(serverId, benchmarkId) {
-  // TODO: implement this with ZMQ...
-  //
-  //       1. Ask benchend to run a particular benchmark
-  //
-  console.log('Server ' + serverId + ', Benchmark ' + benchmarkId + ' START');
+  console.log('Server ' + serverId + ', Benchmark ' + benchmarkId + ' startBenchmark');
   sendMessage(serverId, 'startBenchmark', {benchmarkId: benchmarkId});
 }
 
@@ -105,11 +97,7 @@ BenchendController.prototype.startBenchmark = function(serverId, benchmarkId) {
  * @param      {Number}  benchmarkId  Benchmark ID
  */
 BenchendController.prototype.stopBenchmark = function(serverId, benchmarkId) {
-  // TODO: implement this with ZMQ...
-  //
-  //       1. Ask benchend to stop a particular benchmark
-  //
-  console.log('Server ' + serverId + ', Benchmark ' + benchmarkId + ' STOP');
+  console.log('Server ' + serverId + ', Benchmark ' + benchmarkId + ' stopBenchmark');
   sendMessage(serverId, 'stopBenchmark', {benchmarkId: benchmarkId});
 }
 

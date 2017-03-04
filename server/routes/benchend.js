@@ -38,4 +38,14 @@ BenchendRoute.get('/server/:serverId/benchmark/:benchmarkId/stop', function(req,
   res.sendStatus(200);
 });
 
+BenchendRoute.get('/server/:serverId/startMetricStream', function(req, res) {
+  benchend.startMetricStream(req.params['serverId']);
+  res.sendStatus(200);
+});
+
+BenchendRoute.get('/server/:serverId/stopMetricStream', function(req, res) {
+  benchend.stopMetricStream(req.params['serverId']);
+  res.sendStatus(200);
+});
+
 module.exports = BenchendRoute;
