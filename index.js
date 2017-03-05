@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
-var app = require('./app');
-var debug = require('debug')('dellve-backend:server');
-var dotenv = require('dotenv');
-var http = require('http');
-
 /**
  * Load environment variables.
  */
 
+var dotenv = require('dotenv');
 dotenv.load('.env');
+
+var app = require('./app');
+var debug = require('debug')('dellve-backend:server');
+var http = require('http');
 
 /**
  * Node.js HTTP server instance.
