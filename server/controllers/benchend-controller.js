@@ -2,6 +2,10 @@ var zmq = require('zeromq');
 var pub = zmq.socket('pub');
 var sub = zmq.socket('sub');
 
+var monitor = require('./zeromq-monitor.js');
+var pubMonitor = new monitor(pub);
+var subMonitor = new monitor(sub);
+
 function renderMessage(serverId, messageType, messageData) {
   return serverId.toString() + ' ' + messageType.toString() + ' ' + JSON.stringify(messageData);
 }
@@ -27,36 +31,30 @@ function BenchendController(userCallbacks) {
   sub.on('message', function(data) {
     // TODO: dispatch data to private methods and user callbacks
   });
+  this.pubAddr = 'tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT;
+  this.subAddr = 'tcp://' + process.env.ZMQ_SUB_HOST + ':' + process.env.ZMQ_SUB_PORT;
 }
 
 /**
  *  Starts benchend service endpoint.
  */
 BenchendController.prototype.start = function() {
-  console.log('START PUB tcp://' +
-    (process.env.ZMQ_PUB_HOST || '*') + ':' +
-    (process.env.ZMQ_PUB_PORT || '5556'));
-  console.log('START SUB tcp://' +
-    (process.env.ZMQ_SUB_HOST || 'localhost') + ':' +
-    (process.env.ZMQ_SUB_PORT || '5555'));
-  // TODO: consider async alternatives to bindSync
-  pub.bind('tcp://' +
-    (process.env.ZMQ_PUB_HOST || '*') + ':' +
-    (process.env.ZMQ_PUB_PORT || '5556'))
-  sub.connect('tcp://' +
-    (process.env.ZMQ_SUB_HOST || 'localhost') + ':' +
-    (process.env.ZMQ_SUB_PORT || '5555'));
+  pubMonitor.start();
+
+  pub.bind(this.pubAddr, function(err) {
+ 	if (err) console.log(err);
+  });
+  sub.connect(this.subAddr);
 }
 
 /**
  * Stops benchend service endpoint.
  */
 BenchendController.prototype.stop = function() {
-  console.log('STOP PUB tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT);
-  console.log('STOP SUB tcp://'  + process.env.ZMQ_SUB_HOST + ':' + process.env.ZMQ_SUB_PORT);
-  // TODO: consider async alternatives to unbindSync
-  pub.unbind('tcp://' + process.env.ZMQ_PUB_HOST + ':' + process.env.ZMQ_PUB_PORT);
-  sub.disconnect('tcp://' + process.env.ZMQ_SUB_HOST + ':' + process.env.ZMQ_SUB_PORT);
+  pubMonitor.stop();
+
+  pub.unbind(this.pubAddr);
+  sub.disconnect(this.subAddr);
 }
 
 /**
@@ -65,7 +63,6 @@ BenchendController.prototype.stop = function() {
  * @param      {Number}  serverId     Server ID
  */
 BenchendController.prototype.startMetricStream = function(serverId) {
-  console.log('Server ' + serverId + ' startMetricStream');
   sendMessage(serverId, 'startMetricStream', {});
 }
 
@@ -75,7 +72,6 @@ BenchendController.prototype.startMetricStream = function(serverId) {
  * @param      {Number}  serverId     Server ID
  */
 BenchendController.prototype.stopMetricStream = function(serverId) {
-  console.log('Server ' + serverId + ' stopMetricStream');
   sendMessage(serverId, 'stopMetricStream', {});
 }
 
@@ -86,7 +82,6 @@ BenchendController.prototype.stopMetricStream = function(serverId) {
  * @param      {Number}  benchmarkId  Benchmark ID
  */
 BenchendController.prototype.startBenchmark = function(serverId, benchmarkId) {
-  console.log('Server ' + serverId + ', Benchmark ' + benchmarkId + ' startBenchmark');
   sendMessage(serverId, 'startBenchmark', {benchmarkId: benchmarkId});
 }
 
@@ -97,7 +92,6 @@ BenchendController.prototype.startBenchmark = function(serverId, benchmarkId) {
  * @param      {Number}  benchmarkId  Benchmark ID
  */
 BenchendController.prototype.stopBenchmark = function(serverId, benchmarkId) {
-  console.log('Server ' + serverId + ', Benchmark ' + benchmarkId + ' stopBenchmark');
   sendMessage(serverId, 'stopBenchmark', {benchmarkId: benchmarkId});
 }
 
