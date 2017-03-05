@@ -1,6 +1,6 @@
 var express = require('express');
 var BenchendRoute = express.Router();
-var BenchendController = require('../controllers/benchend-controller');
+var BenchendController = require('./benchend-controller');
 
 var benchend = new BenchendController();
 

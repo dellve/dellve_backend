@@ -2,7 +2,7 @@ var zmq = require('zeromq');
 var pub = zmq.socket('pub');
 var sub = zmq.socket('sub');
 
-var monitor = require('./zeromq-monitor.js');
+var monitor = require('../helpers/zeromq-monitor.js');
 var pubMonitor = new monitor(pub);
 var subMonitor = new monitor(sub);
 

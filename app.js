@@ -2,13 +2,15 @@
  * Express.js application instance.
  */
 
-var express = require('express')();
+var express = require('express');
 var expressJwt = require('express-jwt');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var path = require('path');
+
+var app = express();
 
 /**
  * Setup JS web-token middleware
@@ -23,21 +25,21 @@ var path = require('path');
  * Register middleware
  */
 
-express.use(bodyParser.json());
-express.use(bodyParser.urlencoded({ extended: false }));
-express.use(cookieParser());
-express.use(favicon(path.join(__dirname, 'client', 'favicon.ico')));
-express.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(favicon(path.join(__dirname, 'client', 'favicon.ico')));
+app.use(logger('dev'));
 
 /**
  * Register routes (and routed middleware)
  */
 
-// express.use('/', function(req, res) {
+// app.use('/', function(req, res) {
 //   res.send('DELLve - backend!');  // NOTE: this is here to see if server works...
 // });
 
-express.use('/benchend', require('./server/routes/benchend'));
-// express.use('/benchend', expressJwt); // secure benchend...
+app.use('/benchend', require('./controllers/benchend'));
+// app.use('/benchend', expressJwt); // secure benchend...
 
-module.exports = express;
+module.exports = app;
