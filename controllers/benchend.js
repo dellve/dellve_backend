@@ -1,51 +1,64 @@
 var express = require('express');
-var BenchendRoute = express.Router();
-var BenchendController = require('./benchend-controller');
+var BenchendController = express.Router();
 
-var benchend = new BenchendController();
+var messenger = require('../helpers/zeromq-benchend-messenger');
+var messenger = new messenger();
 
-benchend.start();
+messenger.start();
 process.on('SIGINT', function () {
-  benchend.stop();
+  messenger.stop();
 });
 
-// TODO: define benchend API REST end-point here
-//
-// For example:
-//
-//       router.get('/', function(req, res, next) {
-//         res.render('Benchend API');
-//       });
-//
-// Note: Essentially, we need to map this route's API into that
-//       of 'benchend-controller' (which you can find in ../controllers/)
-
-BenchendRoute.get('/', function(req, res) {
-  res.send('Benchend Main');
-});
-
-BenchendRoute.post('/server/:id', function(req, res) {
+BenchendController.post('/server/:id', function(req, res) {
   res.send('Posted: ' + req.params['id']);
 });
 
-BenchendRoute.get('/server/:serverId/benchmark/:benchmarkId/start', function(req, res) {
-  benchend.startBenchmark(req.params['serverId'], req.params['benchmarkId']);
+/**
+ * Starts the metric stream from a particular server.
+ *
+ * @param      {Number}  serverId     Server ID
+ */
+BenchendController.get('/server/:serverId/startMetricStream', function(req, res) {
+  var serverId = req.params['serverId'];
+  messenger.sendMessage(serverId, 'startMetricStream', {});
   res.sendStatus(200);
 });
 
-BenchendRoute.get('/server/:serverId/benchmark/:benchmarkId/stop', function(req, res) {
-  benchend.stopBenchmark(req.params['serverId'], req.params['benchmarkId']);
+/**
+ * Stops the metric stream from a particular server.
+ *
+ * @param      {Number}  serverId     Server ID
+ */
+BenchendController.get('/server/:serverId/stopMetricStream', function(req, res) {
+  var serverId = req.params['serverId'];
+  messenger.sendMessage(serverId, 'stopMetricStream', {});
+  res.sendStatus(200);
+});
+/**
+ * Starts a benchmark.
+ *
+ * @param      {Number}  serverId     Server ID
+ * @param      {Number}  benchmarkId  Benchmark ID
+ */
+BenchendController.get('/server/:serverId/benchmark/:benchmarkId/start', function(req, res) {
+  var serverId = req.params['serverId'];
+  var benchmarkId = req.params['benchmarkId'];
+  messenger.sendData(serverId, 'startBenchmark', {benchmarkId: benchmarkId});
   res.sendStatus(200);
 });
 
-BenchendRoute.get('/server/:serverId/startMetricStream', function(req, res) {
-  benchend.startMetricStream(req.params['serverId']);
+/**
+ * Stops a benchmark.
+ *
+ * @param      {Number}  serverId     Server ID
+ * @param      {Number}  benchmarkId  Benchmark ID
+ */
+BenchendController.get('/server/:serverId/benchmark/:benchmarkId/stop', function(req, res) {
+  var serverId = req.params['serverId'];
+  var benchmarkId = req.params['benchmarkId'];
+  messenger.sendData(serverId, 'stopBenchmark', {benchmarkId: benchmarkId});
   res.sendStatus(200);
 });
 
-BenchendRoute.get('/server/:serverId/stopMetricStream', function(req, res) {
-  benchend.stopMetricStream(req.params['serverId']);
-  res.sendStatus(200);
-});
 
-module.exports = BenchendRoute;
+module.exports = BenchendController;

@@ -1,10 +1,19 @@
+/**
+ * ZMQMonitor constructor.
+ * Monitors the socket for various events and prints to console.
+ *
+ * @access      public
+ * @class       ZMQMonitor
+ * @param       {Socket}    ZMQSocket from calling require('zeromq').socket()
+ */
 function ZMQMonitor(ZMQSocket) {
   this.socket = ZMQSocket;
-
-  // Register monitoring events
   this.configureMonitor();
 }
 
+/**
+ * Register monitoring events.
+ */
 ZMQMonitor.prototype.configureMonitor = function() {
   this.socket.on('listen', function(fd, ep) {
     console.log('Successfuly binded to:', ep);
@@ -27,6 +36,9 @@ ZMQMonitor.prototype.configureMonitor = function() {
   });
 }
 
+/**
+ * Start monitoring on the socket provided to constructor
+ */
 ZMQMonitor.prototype.start = function() {
   // Handle monitor error
   this.socket.on('monitor_error', function(err) {
@@ -38,6 +50,9 @@ ZMQMonitor.prototype.start = function() {
   this.socket.monitor(500, 0);
 }
 
+/**
+ * Stop monitoring.
+ */
 ZMQMonitor.prototype.stop = function() {
   this.socket.unmonitor();
 }
