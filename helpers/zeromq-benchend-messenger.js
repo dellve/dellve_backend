@@ -33,7 +33,7 @@ function ZMQBenchendMessenger() {
 ZMQBenchendMessenger.prototype.start = function() {
   pubMonitor.start();
   pub.bind(this.pubAddr, function(err) {
- 	if (err) {
+    if (err) {
       console.log(err);
     }
   });
